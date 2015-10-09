@@ -124,6 +124,8 @@ GEM
       sass (~> 3.2.0)
       sprockets (~> 2.8, <= 2.11.0)
       sprockets-rails (~> 2.0)
+    shoulda-matchers (3.0.0)
+      activesupport (>= 4.0.0)
     slop (3.4.7)
     sluggable_riggs (0.0.1)
     sprockets (2.11.0)
@@ -169,6 +171,7 @@ DEPENDENCIES
   rails_12factor
   rspec-rails (= 2.99)
   sass-rails
+  shoulda-matchers
   sluggable_riggs
   thin
   uglifier

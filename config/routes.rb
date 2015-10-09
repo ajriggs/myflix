@@ -1,5 +1,5 @@
 Myflix::Application.routes.draw do
-  get '/home', to: 'categories#index'
+  get '/home', to: 'categories#index', as: 'home'
   get '/videos/:id', to: 'videos#show', as: 'video'
   get '/categories/:id', to: 'categories#show', as: 'category'
 

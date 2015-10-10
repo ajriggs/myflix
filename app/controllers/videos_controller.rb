@@ -1,7 +1,7 @@
 class VideosController < ApplicationController
 
   def index
-    @videos = Video.all.limit 6
+    @categories = Category.all
     render :home
   end
 
@@ -9,6 +9,8 @@ class VideosController < ApplicationController
     @video = Video.find_by(slug: params[:id])
   end
 
-  
+  def search
+    @search_results = Video.search_by_title(params[:search])
+  end
 
 end

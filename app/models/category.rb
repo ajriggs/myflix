@@ -1,7 +1,7 @@
 class Category < ActiveRecord::Base
   include Sluggable
 
-  has_many :videos, -> { order('title') }
+  has_many :videos
 
   validates :name, presence: true, uniqueness: true, length: {minimum: 3}
 

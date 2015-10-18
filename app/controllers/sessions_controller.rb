@@ -1,9 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :require_logout, except: [:logout]
-
-  def login
-    render :sign_in
-  end
+  before_action :require_logout, except: [:destroy]
 
   def create
     user = User.find_by(email: params[:email])
@@ -16,7 +12,7 @@ class SessionsController < ApplicationController
     end
   end
 
-  def logout
+  def destroy
     session[:user_id] = nil
     redirect_to root_path, notice: 'Successfully logged out.'
   end

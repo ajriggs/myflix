@@ -3,7 +3,6 @@ class VideosController < ApplicationController
 
   def index
     @categories = Category.all
-    render :home
   end
 
   def show

@@ -1,0 +1,5 @@
+%article.video_category
+  %header
+    %h3= link_to "#{category.name}", category_path(category)
+  .videos.row
+    = render category.recent_videos

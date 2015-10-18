@@ -36,5 +36,5 @@ describe '#search_by_title' do
     south_park = Video.create(title: 'South Park', tagline: 'Kick da babyy!!')
     expect(Video.search_by_title('south park')).to eq([south_park])
   end
-  
+
 end

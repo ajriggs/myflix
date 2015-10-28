@@ -7,8 +7,8 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       redirect_to home_path, notice: "Welcome, #{user.full_name}!"
     else
-      flash[:error] = 'Oops! There was something wrong with your login credentials. Try again?'
-      redirect_to login_path
+      flash.now[:error] = 'Oops! There was something wrong with your login credentials. Try again?'
+      render :new
     end
   end
 

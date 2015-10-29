@@ -8,20 +8,22 @@ describe UsersController do
   describe 'GET new' do
     it 'sets @user as a new instance of User class' do
       get :new
-      expect(assigns(:user)).to be_a_new User
+      expect(assigns :user).to be_a_new User
     end
   end
 
   describe 'POST create' do
-    it 'sets @user' do
-      post :create, user: { email: faker_email, password: 'password', full_name: faker_name }
-      expect(assigns(:user)).to be_a User
+    let(:user_params) { Fabricate.attributes_for :user }
+
+    context 'always' do
+      it 'sets @user based on user params' do
+        post :create, user: user_params
+        expect(assigns(:user).full_name).to eq user_params[:full_name]
+      end
     end
 
     context 'with valid input' do
-      before do
-        post :create, user: { email: faker_email, password: 'password', full_name: faker_name }
-      end
+      before { post :create, user: user_params }
 
       it 'saves @user to the database' do
         expect(User.count).to eq 1
@@ -37,7 +39,7 @@ describe UsersController do
     end
 
     context 'with invalid input' do
-      before { post :create, user: {email: '', password: '', full_name: ''} }
+      before { post :create, user: {email: '', full_name: '', password:''} }
 
       it 'does not save @user to the database' do
         expect(User.count).to eq 0

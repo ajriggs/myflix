@@ -30,7 +30,7 @@ describe ApplicationController do
       end
 
       it 'does not redirect' do
-        expect(assigns(:redirect_bypassed)).to be true
+        expect(assigns :redirect_bypassed).to be true
       end
 
       it 'does not set flash[:notice]' do
@@ -75,7 +75,7 @@ describe ApplicationController do
       before { get :require_logout_test }
 
       it 'does not redirect' do
-        expect(assigns(:redirect_bypassed)).to be true
+        expect(assigns :redirect_bypassed).to be true
       end
 
       it 'does not set flash[:notice]' do
@@ -96,12 +96,15 @@ describe ApplicationController do
   end
 
   describe '#current_user' do
-    it 'returns the logged in user (as an object) if a user is logged in' do
-      user_id = test_login #test_login returns id of the user it authenticates
+    let(:user_id) { test_login }
+    before { user_id }
+
+    it 'returns the logged in user, if a user is logged in' do
       expect(controller.current_user.id).to eq user_id
     end
 
     it 'returns nil if not logged in' do
+      test_logout
       expect(controller.current_user).to be nil
     end
   end

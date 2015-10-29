@@ -6,8 +6,8 @@ class User < ActiveRecord::Base
   before_save :render_unique_slug!
 
   validates :full_name, presence: true
-  validates :email, presence: true, uniqueness: {case_sensitive: false}
-  validates :password, presence: true, length: {minimum: 6}, on: :create
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :password, presence: true, length: { minimum: 6 }, on: :create
 
   sluggable_column :email
 end

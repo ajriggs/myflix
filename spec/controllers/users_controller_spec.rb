@@ -3,10 +3,9 @@ require 'spec_helper'
 include Testable
 
 describe UsersController do
+  it { should use_before_action :require_logout }
 
   describe 'GET new' do
-    it { should use_before_action :require_logout }
-
     it 'sets @user as a new instance of User class' do
       get :new
       expect(assigns(:user)).to be_a_new User
@@ -14,8 +13,6 @@ describe UsersController do
   end
 
   describe 'POST create' do
-    it { should use_before_action :require_logout }
-
     it 'sets @user' do
       post :create, user: { email: faker_email, password: 'password', full_name: faker_name }
       expect(assigns(:user)).to be_a User

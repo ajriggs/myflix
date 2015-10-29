@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   include Sluggable
   has_secure_password validations: false
+  has_many :reviews
 
   before_save :render_unique_slug!
 

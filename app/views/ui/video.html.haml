@@ -21,7 +21,7 @@
             %label Rate this video
             .row
               .col-sm-3
-                %select.form-control(name="")
+                %select.form-control(name="rating")
                   %option(value="5") 5 Stars
                   %option(value="4") 4 Stars
                   %option(value="3") 3 Stars
@@ -31,7 +31,7 @@
             %label Write Review
             .row
               .col-sm-8
-                %textarea.form-control(name="" rows="6")
+                %textarea.form-control(name="review" rows="6")
         %fieldset.form-group.actions.clearfix
           %input(type="submit" value="Submit" class="btn")
           %a(href="") Cancel

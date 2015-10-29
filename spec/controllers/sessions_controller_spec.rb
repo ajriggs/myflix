@@ -4,14 +4,9 @@ require 'shoulda-matchers'
 include Testable
 
 describe SessionsController do
-
-  describe  'GET new' do
-    it { should use_before_action :require_logout }
-  end
+  it { should use_before_action :require_logout }
 
   describe 'POST create' do
-    it { should use_before_action :require_logout }
-
     let(:user) { Fabricate(:user) }
 
     context 'with valid credentials' do

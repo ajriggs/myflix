@@ -4,3 +4,5 @@ class CategoriesController < ApplicationController
     @category = Category.find_by(slug: params[:id])
   end
 end
+
+#add spec for CategoriesController

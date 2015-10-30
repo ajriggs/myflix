@@ -14,7 +14,7 @@ describe ReviewsController do
     before { current_user_id }
 
     context 'always' do
-      before { post :create, video_id: video.slug, review: review_params }
+      before { post :create, video_id: video, review: review_params }
 
       it 'sets @video to the video being viewed' do
         expect(assigns(:video).id).to eq video.id
@@ -30,7 +30,7 @@ describe ReviewsController do
     end
 
     context 'with valid input' do
-      before { post :create, video_id: video.slug, review: review_params }
+      before { post :create, video_id: video, review: review_params }
 
       it 'saves the review to the database' do
         expect(Video.first.reviews.count).to eq 1
@@ -46,7 +46,7 @@ describe ReviewsController do
     end
 
     context 'with invalid input' do
-      before { post :create, video_id: video.slug, review: { rating: 0 } }
+      before { post :create, video_id: video, review: { rating: 0 } }
 
       it 'does not save the review to the database' do
         expect(Video.first.reviews.empty?).to be true

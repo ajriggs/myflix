@@ -45,7 +45,7 @@ describe ApplicationController do
         expect(response).to redirect_to login_path
       end
 
-      it 'sets an error message in flash[:notice]' do
+      it 'sets flash[:notice]' do
         expect(flash[:notice]).to be_a String
       end
     end

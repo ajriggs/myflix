@@ -21,7 +21,7 @@ describe VideosController do
     before do
       test_login
       #the web call below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
-      get :show, id: video.slug
+      get :show, id: video
     end
 
     it 'sets @video to the specified video' do

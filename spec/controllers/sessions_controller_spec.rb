@@ -16,7 +16,7 @@ describe SessionsController do
         expect(session[:user_id]).to eq user.id
       end
 
-      it 'redirects to the home page on successfull login' do
+      it 'redirects to the home page' do
         expect(response).to redirect_to home_path
       end
 
@@ -32,7 +32,7 @@ describe SessionsController do
         expect(session[:user_id]).to be nil
       end
 
-      it 'renders the new template if user email is invalid' do
+      it 'renders the new template' do
         expect(response).to render_template :new
       end
 

@@ -18,8 +18,7 @@
             = f.label :rating, 'Rate this video'
             .row
               .col-sm-3
-                - possible_stars = (1..5).map { |n| [pluralize(n, 'Star'), n] }
-                = f.select(:rating, possible_stars, {include_blank: 'No Rating'}, {class: 'form-control'})
+                = f.select(:rating, rating_choices, {include_blank: 'No Rating'}, {class: 'form-control'})
           .form-group
             = f.label :review, 'Write Review'
             .row

@@ -53,7 +53,7 @@ describe '#average_rating' do
   let(:video) { fabricate_video_add_ratings [1, 3, 5] }
 
   it "returns NaN if no reviews have been submitted" do
-    expect(Fabricate(:video).average_rating.nan?).to be true
+    expect(Fabricate(:video).average_rating).to be_nan
   end
 
   it 'returns the average as a float' do

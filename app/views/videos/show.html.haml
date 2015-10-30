@@ -6,5 +6,29 @@
       .video_info.col-sm-3
         %header
           %h3= @video.title
-          %span Rating: (coming soon!)
+          %span Rating: (#{display_avg_video_stars(@video)})
         %p= @video.tagline
+
+%section.reviews.container
+  .row
+    .col-sm-10.col-sm-offset-1
+      = form_for [@video, @review] do |f|
+        %fieldset
+          .form-group
+            = f.label :rating, 'Rate this video'
+            .row
+              .col-sm-3
+                = f.select(:rating, rating_choices, {include_blank: 'No Rating'}, {class: 'form-control'})
+          .form-group
+            = f.label :review, 'Write Review'
+            .row
+              .col-sm-8
+                = f.text_area(:review, rows: '6', class: 'form-control')
+        %fieldset.form-group.actions.clearfix
+          = f.submit :submit, class: 'btn'
+          = link_to 'Cancel', @video
+      %header
+        %h3 User Reviews (#{@video.reviews.count})
+      %ul
+        - @video.reviews.reload
+        = render @video.reviews

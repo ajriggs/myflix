@@ -7,16 +7,16 @@ class ApplicationController < ActionController::Base
     !!session[:user_id]
   end
 
+  def current_user
+    @current_user ||= User.find session[:user_id] if logged_in?
+  end
+
   def require_login
-    redirect_to root_path unless logged_in?
+    redirect_to login_path, notice: 'You must log in first!' unless logged_in?
   end
 
   def require_logout
-    redirect_to home_path if logged_in?
-  end
-
-  def current_user
-    @current_user ||= User.find(session[:user_id]) if logged_in?
+    redirect_to home_path, notice: 'You are already logged in!' if logged_in?
   end
 
 end

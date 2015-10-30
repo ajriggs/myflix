@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
+  before_action :require_logout
+  
   def front
-    require_logout
   end
 end

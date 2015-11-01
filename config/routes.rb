@@ -5,12 +5,15 @@ Myflix::Application.routes.draw do
   get '/login', to: 'sessions#new'
   get '/logout', to: 'sessions#destroy'
   get '/home', to: 'videos#index'
-
+  get '/my_queue', to: 'queue_items#index', as: 'my_queue'
+  
+  resources :queue_items, only: [:destroy]
   resources :categories, only: [:show]
   resources :users, only: [:create]
   resources :sessions, only: [:create]
   resources :videos, only: [:show] do
     collection { get 'search', to: 'videos#search' }
     resources :reviews, only: [:create]
+    resources :queue_items, only: [:create]
   end
 end

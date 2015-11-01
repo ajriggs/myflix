@@ -4,8 +4,9 @@ module Testable
 
 
   # functional helpers
-  def test_login
-    session[:user_id] = Fabricate(:user).id
+  def test_login(user = nil)
+    return session[:user_id] = Fabricate(:user).id if user == nil
+    session[:user_id] = user.id
   end
 
   def test_logout

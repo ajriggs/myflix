@@ -6,8 +6,11 @@
       .video_info.col-sm-3
         %header
           %h3= @video.title
-          %span Rating: (#{display_avg_video_stars(@video)})
+          %span Rating: (#{display_avg_video_stars @video})
         %p= @video.tagline
+        .actions
+          %a.btn.btn-primary(href="") Watch Now
+          = link_to '+ My Queue', video_queue_items_path(@video), method: :post, class: 'btn btn-default'
 
 %section.reviews.container
   .row

@@ -1,3 +1,5 @@
+include Testable
+
 Fabricator(:category) do
-  name {%w(comedy sci-fi fantasy horror drama).sample}
+  name { faker_lorem 5 }
 end

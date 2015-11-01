@@ -1,5 +1,7 @@
+include Testable
+
 Fabricator(:user) do
-  full_name { Faker::Name.name }
-  email { Faker::Internet.email }
+  full_name { faker_name }
+  email { faker_email }
   password { 'testpass' }
 end

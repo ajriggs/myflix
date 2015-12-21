@@ -4,7 +4,7 @@ require 'shoulda-matchers'
 # this version of the method always makes vids one by one, as if each is a day older than the next created.  Refactor if more flexibility is required down the line.
 def assign_videos_to_category(count, category)
   count.times do |n|
-    Video.create title: "video #{n}", tagline: "it's the tagline", category: category, created_at: n.days.ago
+    Fabricate :video, category: category, created_at: n.days.ago
   end
 end
 

@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-include Testable
-
 describe ApplicationController do
   controller do
     before_action :require_login, only: [:require_login_test]

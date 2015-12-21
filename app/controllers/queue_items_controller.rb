@@ -20,6 +20,17 @@ class QueueItemsController < ApplicationController
   def destroy
     queue_item = QueueItem.find params[:id]
     current_user.remove_from_queue!(queue_item)
+    current_user.normalize_queue!
+    redirect_to my_queue_path
+  end
+
+  def update
+    begin
+      current_user.update_queue!(params[:queue])
+    rescue
+      flash[:error] = 'Oops! Something went wrong.'
+    end
+    current_user.normalize_queue!
     redirect_to my_queue_path
   end
 end

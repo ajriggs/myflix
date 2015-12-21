@@ -17,11 +17,25 @@ class User < ActiveRecord::Base
   end
 
   def remove_from_queue!(queue_item)
-    if queue_items.include? queue_item
-      queue_items.each do |i|
-        i.update_attribute :position, i.position - 1 if i.position > queue_item.position
+    queue_item.destroy if queue_items.include? queue_item
+  end
+
+  def has_in_queue?(video)
+    true if self.queue_items.map(&:video).include? video
+  end
+
+  def update_queue!(queue_params)
+    ActiveRecord::Base.transaction do
+      queue_params.each_with_index do |params, index|
+        queue_item = QueueItem.find params[:id]
+        if queue_item.user == self
+          queue_item.update_attributes! position: params[:position], rating: params[:rating]
+        end
       end
-      queue_item.destroy
     end
+  end
+
+  def normalize_queue!
+    queue_items.each_with_index {|item, index| item.update! position: index + 1}
   end
 end

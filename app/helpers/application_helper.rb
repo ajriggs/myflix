@@ -3,8 +3,8 @@ module ApplicationHelper
     video.average_rating.nan? ? 'No Ratings' : video.average_rating
   end
 
-  def rating_choices
-    (1..5).map { |n| [pluralize(n, 'Star'), n] }
+  def rating_choices(selected=nil)
+    options_for_select((1..5).map { |n| [pluralize(n, 'Star'), n] }, selected)
   end
 
 end

@@ -1,4 +1,4 @@
-include Testable
+include Fakeable
 
 Fabricator(:review) do
   rating { [*1..5].sample }

@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-include Testable
-
 describe UsersController do
   it { should use_before_action :require_logout }
 

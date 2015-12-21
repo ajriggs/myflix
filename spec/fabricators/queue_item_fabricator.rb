@@ -1,5 +1,3 @@
-include Testable
-
 Fabricator(:queue_item) do
   user
   video

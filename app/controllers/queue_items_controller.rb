@@ -27,7 +27,7 @@ class QueueItemsController < ApplicationController
   def update
     begin
       current_user.update_queue!(params[:queue])
-    rescue
+    rescue ActiveRecord::RecordInvalid
       flash[:error] = 'Oops! Something went wrong.'
     end
     current_user.normalize_queue!

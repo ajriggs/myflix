@@ -49,27 +49,30 @@ describe '#has_in_queue?' do
   end
 
   it "returns false if the given video is not in the user's queue" do
-    expect(user.has_in_queue? south_park).to be nil
+    expect(user.has_in_queue? south_park).to be false
   end
 end
 
 describe '#update_queue!' do
   let(:user) { Fabricate :user }
-  let!(:queue) { render_queue(user, 3) }
+  let!(:queue_item_1) { Fabricate :queue_item, user: user, position: 1, rating: 2 }
+  let!(:queue_item_2) { Fabricate :queue_item, user: user, position: 2, rating: 5 }
+  let!(:queue_item_3) { Fabricate :queue_item, user: user, position: 3, rating: nil }
+  let!(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
 
   it 'does not update the queue if any item submitted for update is not associated with the user' do
     invalid_queue = queue << Fabricate(:queue_item)
     invalid_queue_params = render_queue_params invalid_queue
     user.update_queue! invalid_queue_params
-    queue.pop
-    expect(user.queue_items).to match_array queue
+    expect(user.queue_items).to match_array queue[0...-1]
   end
 
   it 'updates the queue if user provides first rating for a queue item' do
     queue << Fabricate(:queue_item, user: user, rating: nil)
     new_queue = queue.clone
     new_queue[3].rating = 5
-    user.update_queue!(render_queue_params new_queue)
+    queue_params_with_new_rating = render_queue_params new_queue
+    user.update_queue!(queue_params_with_new_rating)
     expect(user.queue_items).to match_array new_queue
   end
 
@@ -100,14 +103,17 @@ describe '#update_queue!' do
     queue_params = render_queue_params queue
     queue_params[0][:position] = 2.0
     queue_params[1][:position] = 1.0
-    user.update_queue!(queue_params) rescue
+    user.update_queue!(queue_params) rescue ActiveRecord::RecordInvalid
     expect(user.queue_items).to match_array queue
   end
 end
 
 describe '#normalize_queue!' do
   let(:user) { Fabricate :user }
-  let!(:queue) { render_queue(user, 3) }
+  let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1, rating: 2 }
+  let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2, rating: 5 }
+  let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3, rating: nil }
+  let!(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
 
   it 'does not alter the order of the queue, if all queue item positions are unique non-zero numbers' do
     user.normalize_queue!
@@ -125,5 +131,14 @@ describe '#normalize_queue!' do
     user.queue_items[2].position = 2
     user.normalize_queue!
     expect(user.queue_items.map &:position).to eq [1, 2, 3]
+  end
+end
+
+private
+
+def render_queue_params(queue=nil)
+  queue ||= render_queue(Fabricate :user, 4)
+  queue_params = queue.each.map do |item|
+    { id: item.id, position: item.position, rating: item.rating }
   end
 end

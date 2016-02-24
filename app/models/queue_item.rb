@@ -20,8 +20,16 @@ class QueueItem < ActiveRecord::Base
     end
   end
 
+  def video_title
+    video.title
+  end
+
   def category
     video.category
+  end
+
+  def category_name
+    video.category.name
   end
 
   private

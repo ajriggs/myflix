@@ -22,7 +22,7 @@ describe '#rating=' do
     expect(Review.first.rating).to be_nil
   end
 
-  it 'clears the rating for an existing video review, if given a nil' do
+  it 'clears the rating for an existing video review, if given an empty string' do
     user_review = Fabricate :review, user: item.user, video: item.video, rating: 5
     item.rating = ''
     expect(Review.first.rating).to be_nil
@@ -48,9 +48,23 @@ describe '#rating' do
   end
 end
 
+describe '#video_title' do
+  it 'should return the title of the queue item video' do
+    item = Fabricate :queue_item
+    expect(item.video_title).to eq Video.first.title
+  end
+end
+
 describe '#category' do
   it "returns the item's video's category" do
     item = Fabricate :queue_item
     expect(item.category).to eq item.video.category
+  end
+end
+
+describe '#category_name' do
+  it "it returns the item's category name (string)" do
+    item = Fabricate :queue_item
+    expect(item.category_name).to eq item.category.name
   end
 end

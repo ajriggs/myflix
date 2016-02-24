@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   end
 
   def has_in_queue?(video)
-    true if self.queue_items.map(&:video).include? video
+    queue_items.pluck(:video_id).include? video.id
   end
 
   def update_queue!(queue_params)

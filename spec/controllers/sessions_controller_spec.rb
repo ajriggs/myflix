@@ -35,7 +35,7 @@ describe SessionsController do
       end
 
       it 'sets flash[:error]' do
-        expect(flash[:error]).to be_a String
+        expect(flash[:error]).to be_present
       end
     end
   end

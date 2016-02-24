@@ -4,13 +4,13 @@
     = hidden_field_tag "queue[][id]", queue_item.id
     = text_field_tag "queue[][position]", queue_item.position, class: 'form-control'
   %td
-    = link_to queue_item.video.title, queue_item.video, id: "#{queue_item.video.title}"
+    = link_to queue_item.video_title, queue_item.video, id: "#{queue_item.video_title}"
   %td
     = button_to "Play", nil, class: "btn btn-default"
   %td= select_tag "queue[][rating]", rating_choices(queue_item.rating), prompt: 'No Rating'
 
   %td
-    = link_to queue_item.category.name, queue_item.category
+    = link_to queue_item.category_name, queue_item.category
   %td
     = link_to queue_item, method: :delete do
       %i.glyphicon.glyphicon-remove

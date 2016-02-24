@@ -42,7 +42,7 @@ describe QueueItemsController do
       end
 
       it 'sets flash[:notice]' do
-        expect(flash[:notice]).to be_a String
+        expect(flash[:notice]).to be_present
       end
 
       it 'redirects to the my queue path' do
@@ -58,7 +58,7 @@ describe QueueItemsController do
       end
 
       it 'sets flash[:error]' do
-        expect(flash[:error]).to be_a String
+        expect(flash[:error]).to be_present
       end
 
       it 'sets @queue_items' do
@@ -73,7 +73,10 @@ describe QueueItemsController do
 
   describe 'DELETE destroy' do
     let(:user) { Fabricate :user }
-    let(:queue) { render_queue(user, 3)}
+    let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
+    let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
+    let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
+    let(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
 
     before do
       test_login(user)
@@ -106,7 +109,12 @@ describe QueueItemsController do
   describe 'PATCH update' do
     context "with valid updates to current user's queue" do
       let(:user) { User.find test_login }
-      let!(:queue) { render_queue(user, 5) }
+      let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
+      let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
+      let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
+      let(:queue_item_4) { Fabricate :queue_item, user: user, position: 4}
+      let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
+      let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
 
       it 'redirects to the my queue page' do
         queue_params = queue.map do |item|
@@ -166,17 +174,23 @@ describe QueueItemsController do
         expect(user.queue_items.first.id).to eq queue_params[3][:id]
         expect(user.queue_items.map(&:rating)).to eq [1, 1, 1, 1, 1]
       end
+    end
 
     context "with invalid updates to current user's queue items" do
       let(:user) { User.find test_login }
-      let!(:queue) { render_queue(user, 5) }
+      let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
+      let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
+      let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
+      let(:queue_item_4) { Fabricate :queue_item, user: user, position: 4}
+      let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
+      let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
 
       it 'sets flash[:error]' do
         queue_params = queue.map do |item|
           { id: item.id, position: item.position + 0.5 }
         end
         patch :update, queue: queue_params
-        expect(flash[:error]).to be_a String
+        expect(flash[:error]).to be_present
       end
 
       it 'redirects to the my queue page' do
@@ -187,7 +201,7 @@ describe QueueItemsController do
         expect(response).to redirect_to my_queue_path
       end
 
-      it "doesn't save any updates to queue positions, even if some were valid" do
+      it "doesn't save updates to queue positions, even if some were valid" do
         queue_params = queue.map do |item|
           { id: item.id, position: item.position + 0.5 }
         end

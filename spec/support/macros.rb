@@ -1,14 +1,6 @@
 # unit helpers
 
-def render_queue(user, count)
-  queue = count.times.map do |i|
-    item = Fabricate :queue_item, position: i + 1, user: user
-  end
-  queue.each do |item|
-    Fabricate :review, user: user, video: item.video, rating: 5
-  end
-  queue
-end
+
 
 # service helpers
 
@@ -21,14 +13,7 @@ def test_logout
   session[:user_id] = nil
 end
 
-def render_queue_params(queue=nil)
-  queue ||= render_queue(Fabricate :user, 4)
-  queue_params = queue.each.map do |item|
-    { id: item.id, position: item.position, rating: item.rating }
-  end
-end
-
-# acceptance helpers
+# feature helpers
 
 def login(user=nil)
   user ||= Fabricate :user

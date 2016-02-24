@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-include Testable
-
 describe UsersController do
   it { should use_before_action :require_logout }
 
@@ -50,7 +48,7 @@ describe UsersController do
       end
 
       it 'sets flash[:error]' do
-        expect(flash[:error]).to be_a String
+        expect(flash[:error]).to be_present
       end
     end
   end

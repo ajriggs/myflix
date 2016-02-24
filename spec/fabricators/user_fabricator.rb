@@ -1,4 +1,4 @@
-include Testable
+include Fakeable
 
 Fabricator(:user) do
   full_name { faker_name }

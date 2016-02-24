@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'shoulda-matchers'
 
-include Testable
-
 describe ReviewsController do
   it { should use_before_action :require_login }
 
@@ -53,7 +51,7 @@ describe ReviewsController do
       end
 
       it 'sets flash[:error]' do
-        expect(flash[:error]).to be_a String
+        expect(flash[:error]).to be_present
       end
 
       it 'renders the show template' do

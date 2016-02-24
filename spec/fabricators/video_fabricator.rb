@@ -1,4 +1,4 @@
-include Testable
+include Fakeable
 
 Fabricator(:video) do
   category

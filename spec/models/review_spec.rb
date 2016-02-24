@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'shoulda-matchers'
 
-include Testable
-
 describe Review do
   it { should belong_to :user }
   it { should belong_to :video }

@@ -67,7 +67,7 @@ describe ConnectionsController do
       expect(user.guides.count).to eq 1
     end
 
-    it 'does not allow a user to follow themself' do
+    it 'does not allow a user to follow himself/herself' do
       post :create, user_id: user.slug
       expect(user.guides.count).to eq 0
     end

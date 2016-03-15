@@ -4,10 +4,82 @@ require 'shoulda-matchers'
 describe User do
   it { should have_many :reviews }
   it { should have_many :queue_items }
+  it { should have_many(:follower_connections).class_name('Connection').with_foreign_key 'guide_id' }
+  it { should have_many(:following_connections).class_name('Connection').with_foreign_key 'follower_id' }
   it { should validate_presence_of(:password).on :create }
   it { should validate_length_of(:password).is_at_least 6 }
   it { should validate_presence_of :full_name }
   it { should validate_presence_of :email }
+end
+
+describe '#followers' do
+  let(:riggs) { Fabricate :user, full_name: 'Riggs' }
+
+  it 'returns an array of users following the scoped user' do
+    3.times { Fabricate :connection, guide: riggs }
+    expect(riggs.followers.count).to eq 3
+  end
+
+  it 'returns an empty array if the user has no followers' do
+    expect(riggs.followers).to eq []
+  end
+
+  it 'does not include users followed by the scoped user' do
+    1.times { Fabricate :connection, follower: riggs }
+    1.times { Fabricate :connection, guide: riggs }
+    expect(riggs.followers.count).to eq 1
+  end
+end
+
+describe '#guides' do
+  let (:riggs) { Fabricate :user, full_name: 'Riggs' }
+
+  it 'returns an array of all users followed by the scoped user' do
+    3.times { Fabricate :connection, follower: riggs }
+    expect(riggs.guides.count).to eq 3
+  end
+
+  it 'returns an empty array if scoped user is not following anyone' do
+    expect(riggs.guides).to eq []
+  end
+
+  it 'does not include users following the scoped user' do
+    1.times { Fabricate :connection, follower: riggs }
+    1.times { Fabricate :connection, guide: riggs }
+    expect(riggs.guides.count).to eq 1
+  end
+end
+
+describe '#following?' do
+  let(:riggs) { Fabricate :user, full_name: 'Riggs' }
+  let(:james) { Fabricate :user, full_name: 'James' }
+  let!(:connection) { Fabricate :connection, follower: riggs, guide: james }
+
+  it 'returns true if the user is following the provided guide' do
+    expect(riggs.following? james).to be true
+  end
+
+  it 'returns false if the user is not following the provided guide' do
+    expect(james.following? riggs).to be false
+  end
+end
+
+describe '#cannot_follow?' do
+  let(:riggs) { Fabricate :user }
+  let(:james) { Fabricate :user }
+
+  it 'returns true if the provided user is also the current/scoped user' do
+    expect(james.cannot_follow? james).to be true
+  end
+
+  it 'returns true if the provided user is already followed by the current/scoped user' do
+    Fabricate :connection, follower: riggs, guide: james
+    expect(riggs.cannot_follow? james).to be true
+  end
+
+  it 'returns false if provided a user other than the scoped user, who has not already been followed by the scoped user' do
+    expect(riggs.cannot_follow? james).to be false
+  end
 end
 
 describe '#next_slot_in_queue' do
@@ -137,8 +209,7 @@ end
 private
 
 def render_queue_params(queue=nil)
-  queue ||= render_queue(Fabricate :user, 4)
-  queue_params = queue.each.map do |item|
+  queue_params = queue.map do |item|
     { id: item.id, position: item.position, rating: item.rating }
   end
 end

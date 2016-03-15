@@ -1,0 +1,11 @@
+- index = connection_counter + 1
+%tr(class="connection_#{index}")
+  %td
+    .pull-left
+      %img(src="#{gravatar_image_string(connection.guide)}")
+      = link_to "#{connection.guide_name}", user_path(connection.guide)
+  %td.extra-padding #{connection.guide_queue_size}
+  %td.extra-padding #{connection.guide_followers_count}
+  %td.extra-padding
+    = link_to connection_path(connection), method: :delete, id: "delete_connection_#{index}" do
+      %i.glyphicon.glyphicon-remove

@@ -2,11 +2,6 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 # this version of the method always makes vids one by one, as if each is a day older than the next created.  Refactor if more flexibility is required down the line.
-def assign_videos_to_category(count, category)
-  count.times do |n|
-    Fabricate :video, category: category, created_at: n.days.ago
-  end
-end
 
 describe Category do
   it { should have_many(:videos).order 'created_at DESC' }
@@ -33,5 +28,13 @@ describe '#recent_videos' do
   end
   it 'returns an emtpy array if the category has no videos' do
     expect(comedy.videos).to eq []
+  end
+end
+
+private
+
+def assign_videos_to_category(count, category)
+  count.times do |n|
+    Fabricate :video, category: category, created_at: n.days.ago
   end
 end

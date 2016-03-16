@@ -8,13 +8,13 @@ Myflix::Application.routes.draw do
   get '/my_queue', to: 'queue_items#index', as: 'my_queue'
   patch '/queue_items', to: 'queue_items#update', as: 'update_queue'
 
-  get '/people', to: 'connections#index', as: 'people'
+  get '/people', to: 'follows#index', as: 'people'
 
-  resources :connections, only: [:destroy]
+  resources :follows, only: [:destroy]
   resources :queue_items, only: [:destroy]
   resources :categories, only: [:show]
   resources :users, only: [:create, :show] do
-    resources :connections, only: [:create]    
+    resources :follows, only: [:create]
   end
   resources :sessions, only: [:create]
   resources :videos, only: [:show] do

@@ -1,4 +1,4 @@
-class Connection < ActiveRecord::Base
+class Follow < ActiveRecord::Base
   belongs_to :follower, class_name: 'User'
   belongs_to :guide, class_name: 'User'
 

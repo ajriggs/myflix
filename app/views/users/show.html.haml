@@ -3,9 +3,9 @@
     .col-sm-10.col-sm-offset-1
       %article
         %header
-          %img(src="#{gravatar_image_string(@user)}")
+          = image_tag gravatar_image_string(@user)
           %h2 #{@user.full_name}'s video collection (#{@user.queue_items.count})
-          = link_to 'Follow', user_connections_path(@user), method: :post, class: 'btn btn-default pull-right' unless current_user.cannot_follow? @user
+          = link_to 'Follow', user_follows_path(@user), method: :post, class: 'btn btn-default pull-right' if current_user.can_follow? @user
 
         %table.table
           %thead

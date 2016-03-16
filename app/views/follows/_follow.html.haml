@@ -1,0 +1,11 @@
+- index = follow_counter + 1
+%tr(class="follow_#{index}")
+  %td
+    .pull-left
+      = image_tag gravatar_image_string(follow.guide)
+      = link_to follow.guide_name, follow.guide
+  %td.extra-padding= follow.guide_queue_size
+  %td.extra-padding= follow.guide_followers_count
+  %td.extra-padding
+    = link_to follow, method: :delete, id: "delete_follow_#{index}" do
+      %i.glyphicon.glyphicon-remove

@@ -14,7 +14,7 @@ feature 'Social Networking' do
     expect(page).to have_content "#{james.full_name}'s video collection"
     click_link 'Follow'
     expect(page).to have_content "#{james.full_name}"
-    find('#delete_connection_1').click
+    find('#delete_follow_1').click
     expect(page).to_not have_content "#{james.full_name}"
   end
 end

@@ -2,8 +2,8 @@ class User < ActiveRecord::Base
   include Sluggable
   has_secure_password validations: false
 
-  has_many :follower_connections, class_name: 'Connection', foreign_key: 'guide_id'
-  has_many :following_connections, class_name: 'Connection', foreign_key: 'follower_id'
+  has_many :follows_where_follower, class_name: 'Follow', foreign_key: 'guide_id'
+  has_many :follows_where_following, class_name: 'Follow', foreign_key: 'follower_id'
 
   has_many :reviews, -> { order('created_at DESC') }
   has_many :queue_items, -> { order('position ASC') }
@@ -16,19 +16,19 @@ class User < ActiveRecord::Base
   validates :password, presence: true, length: { minimum: 6 }, on: :create
 
   def followers
-    follower_connections.map(&:follower)
+    follows_where_follower.map(&:follower)
   end
 
   def guides
-    following_connections.map(&:guide)
+    follows_where_following.map(&:guide)
   end
 
   def following?(user)
-    following_connections.map(&:guide).include? user
+    follows_where_following.map(&:guide).include? user
   end
 
-  def cannot_follow?(user)
-    (following? user) || (user == self)
+  def can_follow?(user)
+    !(following?(user) || user == self)
   end
 
   def next_slot_in_queue
@@ -57,5 +57,4 @@ class User < ActiveRecord::Base
   def normalize_queue!
     queue_items.each_with_index {|item, index| item.update! position: index + 1}
   end
-
 end

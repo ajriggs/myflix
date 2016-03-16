@@ -1,6 +1,6 @@
 include Fakeable
 
-Fabricator(:connection) do
+Fabricator(:follow) do
   guide { Fabricate :user }
   follower { Fabricate :user }
 end

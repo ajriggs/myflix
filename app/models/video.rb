@@ -21,4 +21,8 @@ class Video < ActiveRecord::Base
     stars_given = reviews.inject(0) { |total, review| total + review.rating }
     (stars_given.to_f / reviews.count.to_f).round 1
   end
+
+  def genre
+    category.name
+  end
 end

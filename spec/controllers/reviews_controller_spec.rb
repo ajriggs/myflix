@@ -6,10 +6,8 @@ describe ReviewsController do
 
   describe 'POST create' do
     let(:video) { Fabricate :video }
-    let(:current_user_id) { test_login }
+    let!(:current_user_id) { test_login }
     let(:review_params) { Fabricate.attributes_for :review }
-
-    before { current_user_id }
 
     context 'always' do
       before { post :create, video_id: video, review: review_params }

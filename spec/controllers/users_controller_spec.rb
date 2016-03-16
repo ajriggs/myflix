@@ -52,4 +52,13 @@ describe UsersController do
       end
     end
   end
+
+  describe 'GET show' do
+    it 'sets @user to the user defined by params[:id]' do
+      user = Fabricate :user
+      test_login user
+      get :show, id: user.slug
+      expect(assigns :user).to eq user
+    end
+  end
 end

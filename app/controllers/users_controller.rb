@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :require_logout
+  before_action :require_logout, except: [:show]
+  before_action :require_login, only: [:show]
 
   def new
     @user = User.new
@@ -15,9 +16,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def show
+    @user = User.find_by slug: params[:id]
+  end
+
   private
 
-  def user_params
-    params.require(:user).permit :full_name, :email, :password
-  end
+    def user_params
+      params.require(:user).permit :full_name, :email, :password
+    end
+
 end

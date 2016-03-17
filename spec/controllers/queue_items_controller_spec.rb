@@ -203,8 +203,9 @@ describe QueueItemsController do
 
       it "doesn't save updates to queue positions, even if some were valid" do
         queue_params = queue.map do |item|
-          { id: item.id, position: item.position + 0.5 }
+          { id: item.id, position: item.position }
         end
+        queue_params[1][:position] = 2.5
         queue_params[0][:position] = 4
         patch :update, queue: queue_params
         expect(QueueItem.all).to eq queue

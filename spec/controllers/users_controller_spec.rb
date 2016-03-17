@@ -51,6 +51,30 @@ describe UsersController do
         expect(flash[:error]).to be_present
       end
     end
+
+    context 'when sending emails' do
+      before { post :create, user: user_params }
+
+      it 'sends an email with valid input' do
+        expect(ActionMailer::Base.deliveries).to_not be_empty
+      end
+
+      it 'sends to the newly registered user' do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.to).to eq [user_params[:email]]
+      end
+
+      it 'sends the welcome message' do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.body).to include "Welcome to Myflix, #{user_params[:full_name]}"
+      end
+
+      it 'does not send an email with invalid controller input' do
+        outbound_queue_count = ActionMailer::Base.deliveries.count
+        post :create, user: {email: '', full_name: '', password:''}
+        expect(ActionMailer::Base.deliveries.count).to eq outbound_queue_count
+      end
+    end
   end
 
   describe 'GET show' do

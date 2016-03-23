@@ -13,16 +13,14 @@ class User < ActiveRecord::Base
 
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
-  validates :password, presence: true, length: { minimum: 6 }, on: :create
+  validates :password, presence: true, length: { minimum: 6 }
 
   def render_token!
-    self.token = SecureRandom.urlsafe_base64.downcase
-    save
+    update_attribute :token, SecureRandom.urlsafe_base64.downcase
   end
 
   def clear_token!
-    self.token = nil
-    save
+    update_attribute :token, nil
   end
 
   def followers

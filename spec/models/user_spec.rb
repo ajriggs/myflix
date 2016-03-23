@@ -37,7 +37,7 @@ describe User do
       expect(riggs.token).to eq nil
     end
 
-    it "sets the user's token attribute to nil if the user does not have a token set" do |variable|
+    it "sets the user's token attribute to nil if the user does not have a token set" do
       riggs.clear_token!
       expect(riggs.token).to eq nil
     end

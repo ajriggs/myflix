@@ -45,26 +45,53 @@ describe ResetPasswordsController do
     context 'with a valid token' do
       let(:riggs) { Fabricate :user }
 
-      before do
-        riggs.render_token!
-        patch :update, token: riggs.token, user: { password: 'new_password' }
+      context 'and with a valid new password' do
+        before do
+          riggs.render_token!
+          patch :update, token: riggs.token, user: { password: 'new_password' }
+        end
+
+        it "updates the given user's password according to the param passed in" do
+          expect(User.first.password_digest).to_not eq riggs.password_digest
+        end
+
+        it "clears the user's token attribute" do
+          expect(User.first.token).to eq nil
+        end
+
+        it 'sets flash[:notice]' do
+          expect(flash[:notice]).to be_present
+        end
+
+        it 'redirects to the login path' do
+          expect(response).to redirect_to login_path
+        end
       end
 
-      it "updates the given user's password according to the param passed in" do
-        expect(User.first.password_digest).to_not eq riggs.password_digest
+      context 'and with an invalid new password' do
+        before do
+          riggs.render_token!
+          patch :update, token: riggs.token, user: { password: 'blah' }
+        end
+
+        it "does not clear the user's token attribute" do
+          expect(User.first.token).to_not be nil
+        end
+
+        it "does not update the user's password" do
+          expect(User.first.password_digest).to eq riggs.password_digest
+        end
+
+        it 'sets flash.now[:error]' do
+          expect(flash.now[:error]).to be_present
+        end
+
+        it 'renders the edit password page again' do
+          expect(response).to render_template :edit
+        end
       end
 
-      it "clears the user's token attribute" do
-        expect(User.first.token).to eq nil
-      end
 
-      it 'sets flash[:notice]' do
-        expect(flash[:notice]).to be_present
-      end
-
-      it 'redirects to the login path' do
-        expect(response).to redirect_to login_path
-      end
     end
 
     context 'with an invalid token' do

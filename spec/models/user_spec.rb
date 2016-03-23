@@ -11,6 +11,38 @@ describe User do
   it { should validate_presence_of :full_name }
   it { should validate_presence_of :email }
 
+  describe '#render_token!' do
+    let(:riggs) { Fabricate :user }
+    before { riggs.render_token! }
+
+    it 'sets [user].token as a 22-character string (to be emailed to a user who needs a password reset)' do
+      expect(riggs.token.length).to eq 22
+    end
+
+    it 'generates a URL-safe string' do
+      expect(riggs.token.parameterize).to eq riggs.token
+    end
+
+    it 'genereate a a string with only lower-case letter characters' do
+      expect(riggs.token.downcase).to eq riggs.token
+    end
+  end
+
+  describe '#clear_token!' do
+    let(:riggs) { Fabricate :user }
+
+    it "sets the user's token attribute to nil (clears the db column) if the user has a token set" do
+      riggs.render_token!
+      riggs.clear_token!
+      expect(riggs.token).to eq nil
+    end
+
+    it "sets the user's token attribute to nil if the user does not have a token set" do
+      riggs.clear_token!
+      expect(riggs.token).to eq nil
+    end
+  end
+
   describe '#followers' do
     let(:riggs) { Fabricate :user, full_name: 'Riggs' }
 

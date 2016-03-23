@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   def create
     @user = User.create user_params
     if @user.valid?
+      AppMailer.welcome_user_upon_registration(@user).deliver
       redirect_to login_path, notice: "Successfully registered! Please login, #{@user.full_name}"
     else
       flash.now[:error] = 'Your submission contains validation errors. Please fix the highlighted fields before submitting again.'

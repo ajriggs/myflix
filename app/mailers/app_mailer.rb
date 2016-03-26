@@ -10,4 +10,9 @@ class AppMailer < ActionMailer::Base
     @user = user
     mail to: user.email, subject: 'Password Reset'
   end
+
+  def invite_to_register(invitation)
+    @invitation = invitation
+    mail to: @invitation.email, subject: "#{@invitation.inviter_name} invited you to join myflix!"
+  end
 end

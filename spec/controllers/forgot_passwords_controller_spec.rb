@@ -5,10 +5,11 @@ describe ForgotPasswordsController do
     context 'with a valid email address provided' do
       let(:riggs) { Fabricate :user }
       let(:password_email) { ActionMailer::Base.deliveries.last }
+      
       before { post :create, email: riggs.email }
 
       it 'renders a new token for the user with provided email address' do
-        expect(User.first.token).to be_present
+        expect(User.last.token).to be_present
       end
 
       it 'sends an email, to verify password reset' do
@@ -22,7 +23,7 @@ describe ForgotPasswordsController do
       end
 
       it 'provides the correct password reset link in the email' do
-        expect(password_email.body).to include "/reset_password/#{User.first.token}"
+        expect(password_email.body).to include "/reset_password/#{User.last.token}"
       end
 
       it 'redirects the user to the email confirmed path' do
@@ -36,9 +37,9 @@ describe ForgotPasswordsController do
       before { post :create, email: riggs.email }
 
       it 'overwrites the previous token with a new token, rendering the first expired' do
-        first_token = User.first.token
+        first_token = User.last.token
         post :create, email: riggs.email
-        expect(User.first.token).not_to eq first_token
+        expect(User.last.token).not_to eq first_token
       end
 
       it 'sends out another email to the user' do

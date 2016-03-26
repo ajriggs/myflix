@@ -2,9 +2,12 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe VideosController do
-  it { should use_before_action :require_login }
 
   describe 'GET index' do
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :index }
+    end
+
     it 'sets @categories to display all categories in the db' do
       Fabricate(:category) { videos count: 2 }
       test_login
@@ -18,8 +21,12 @@ describe VideosController do
 
     before do
       test_login
-      #the web call below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
+      #the action below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
       get :show, id: video
+    end
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :show, id: video }
     end
 
     it 'sets @video to the specified video' do
@@ -33,6 +40,10 @@ describe VideosController do
 
   describe 'GET search' do
     let(:video) { Fabricate :video }
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :search, user_search: video.title }
+    end
 
     it 'sets @search_results based on submitted search' do
       test_login

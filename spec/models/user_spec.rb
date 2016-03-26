@@ -2,14 +2,15 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe User do
-  it { should have_many :reviews }
-  it { should have_many :queue_items }
-  it { should have_many(:follows_where_follower).class_name('Follow').with_foreign_key 'guide_id' }
-  it { should have_many(:follows_where_following).class_name('Follow').with_foreign_key 'follower_id' }
   it { should validate_presence_of(:password).on :create }
   it { should validate_length_of(:password).is_at_least 6 }
   it { should validate_presence_of :full_name }
   it { should validate_presence_of :email }
+
+  it { should have_many(:follows_where_follower).class_name('Follow').with_foreign_key 'guide_id' }
+  it { should have_many(:follows_where_following).class_name('Follow').with_foreign_key 'follower_id' }
+  it { should have_many :queue_items }
+  it_behaves_like 'Reviewable'
 
   describe '#render_token!' do
     let(:riggs) { Fabricate :user }
@@ -23,7 +24,7 @@ describe User do
       expect(riggs.token.parameterize).to eq riggs.token
     end
 
-    it 'genereate a a string with only lower-case letter characters' do
+    it 'generates a a string with only lower-case letter characters' do
       expect(riggs.token.downcase).to eq riggs.token
     end
   end

@@ -2,16 +2,15 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe CategoriesController do
-  it { should use_before_action :require_login }
-
   describe 'GET show' do
-    before do
-      test_login
-      #the web call below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
-      get :show, id: Fabricate(:category)
+    #the action below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :show, id: Fabricate(:category) }
     end
 
     it 'sets @category' do
+      test_login
+      get :show, id: Fabricate(:category).slug
       expect(assigns :category).to be_a Category
     end
   end

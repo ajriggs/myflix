@@ -2,9 +2,17 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe QueueItem do
-  it { should belong_to :user }
-  it { should belong_to :video }
   it { should validate_uniqueness_of(:video_id).scoped_to :user_id }
+
+  it { should belong_to :video }
+
+  it_behaves_like 'BelongsToUserable' do
+    let(:object) { Fabricate :queue_item }
+  end
+
+  it_behaves_like 'BelongsToVideoable' do
+    let(:object) { Fabricate :queue_item }
+  end
 
   describe '#rating=' do
     let(:item) { Fabricate :queue_item }
@@ -43,27 +51,6 @@ describe QueueItem do
 
     it 'returns nil if no rating is present' do
       expect(item.rating).to be nil
-    end
-  end
-
-  describe '#video_title' do
-    it 'should return the title of the queue item video' do
-      item = Fabricate :queue_item
-      expect(item.video_title).to eq Video.first.title
-    end
-  end
-
-  describe '#category' do
-    it "returns the item's video's category" do
-      item = Fabricate :queue_item
-      expect(item.category).to eq item.video.category
-    end
-  end
-
-  describe '#category_name' do
-    it "it returns the item's category name (string)" do
-      item = Fabricate :queue_item
-      expect(item.category_name).to eq item.category.name
     end
   end
 end

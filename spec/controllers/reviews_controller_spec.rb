@@ -2,14 +2,17 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe ReviewsController do
-  it { should use_before_action :require_login }
 
   describe 'POST create' do
     let(:video) { Fabricate :video }
     let!(:current_user_id) { test_login }
     let(:review_params) { Fabricate.attributes_for :review }
 
-    context 'always' do
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { post :create, video_id: video, review: review_params }
+    end
+
+    context 'with params input' do
       before { post :create, video_id: video, review: review_params }
 
       it 'sets @video to the video being viewed' do

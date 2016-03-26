@@ -7,6 +7,10 @@ describe SessionsController do
   describe 'POST create' do
     let(:user) { Fabricate :user }
 
+    it_behaves_like 'ApplicationController#require_logout' do
+      let(:action) { post :create, email: user.email, password: user.password }
+    end
+
     context 'with valid credentials' do
       before { post :create, email: user.email, password: user.password }
 
@@ -41,10 +45,7 @@ describe SessionsController do
   end
 
   describe 'GET destroy' do
-    before do
-      test_login
-      get :destroy
-    end
+    before { test_login; get :destroy }
 
     it 'sets the session user_id to nil' do
       expect(session[:user_id]).to be nil

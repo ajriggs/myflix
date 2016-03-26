@@ -1,7 +1,5 @@
 # unit helpers
 
-
-
 # service helpers
 
 def test_login(user = nil)

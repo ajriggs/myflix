@@ -2,9 +2,11 @@ require 'spec_helper'
 require 'shoulda-matchers'
 
 describe QueueItemsController do
-  it { should use_before_action :require_login }
-
   describe 'GET index' do
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :index }
+    end
+
     it 'sets @queue_items to the queue items of the logged in user' do
       user = User.find test_login
       queue_items = 2.times.map { |i| Fabricate :queue_item, user: user, position: i + 1 }
@@ -20,6 +22,10 @@ describe QueueItemsController do
 
     before do
       post :create, video_id: video.slug
+    end
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { post :create, video_id: video.slug }
     end
 
     context "if the video is not yet in user's queue" do
@@ -76,11 +82,15 @@ describe QueueItemsController do
     let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
     let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
     let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
-    let(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
+    let!(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
 
     before do
       test_login(user)
       delete :destroy, id: queue[1].id
+    end
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { delete :destroy, id: queue[0].id }
     end
 
     it "it deletes the item, if it's in the current user's queue" do
@@ -107,15 +117,22 @@ describe QueueItemsController do
   end
 
   describe 'PATCH update' do
-    context "with valid updates to current user's queue" do
-      let(:user) { User.find test_login }
-      let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
-      let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
-      let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
-      let(:queue_item_4) { Fabricate :queue_item, user: user, position: 4}
-      let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
-      let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
+    let(:user) { User.find test_login }
+    let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
+    let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
+    let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
+    let(:queue_item_4) { Fabricate :queue_item, user: user, position: 4}
+    let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
+    let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
 
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:queue_params) do
+        queue.map { |item| { id: item.id, position: item.position } }
+      end
+      let(:action) { patch :update, queue: queue_params }
+    end
+
+    context "with valid updates to current user's queue" do
       it 'redirects to the my queue page' do
         queue_params = queue.map do |item|
           { id: item.id, position: item.position }
@@ -177,14 +194,6 @@ describe QueueItemsController do
     end
 
     context "with invalid updates to current user's queue items" do
-      let(:user) { User.find test_login }
-      let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1}
-      let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2}
-      let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3}
-      let(:queue_item_4) { Fabricate :queue_item, user: user, position: 4}
-      let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
-      let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
-
       it 'sets flash[:error]' do
         queue_params = queue.map do |item|
           { id: item.id, position: item.position + 0.5 }

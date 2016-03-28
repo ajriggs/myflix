@@ -1,4 +1,4 @@
-class AppMailerInterceptor
+class AppEmailInterceptor
  def self.delivering_email(message)
    admin_email = 'riggs.aaron@gmail.com'
 

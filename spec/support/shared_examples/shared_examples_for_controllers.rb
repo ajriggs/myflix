@@ -9,7 +9,7 @@ shared_examples 'ApplicationController#require_login' do
 end
 
 shared_examples 'ApplicationController#require_logout' do
-  it 'receives the #require_login method from ApplicationController' do
+  it 'receives the #require_logout method from ApplicationController' do
     test_logout
     expect(controller).to receive(:require_logout)
     action

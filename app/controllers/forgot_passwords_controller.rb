@@ -3,7 +3,7 @@ class ForgotPasswordsController < ApplicationController
     user = User.find_by email: params[:email]
     if user
       user.render_token!
-      AppMailer.notify_user_of_password_reset(user).deliver
+      AppMailer.delay.notify_user_of_password_reset(user)
       redirect_to email_confirmed_path
     else
       flash[:error] = 'The email you provided is not registered with myflix. Please try again.'

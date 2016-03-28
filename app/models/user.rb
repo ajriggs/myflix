@@ -40,6 +40,10 @@ class User < ActiveRecord::Base
     !(following?(user) || user == self)
   end
 
+  def follow!(user)
+    Follow.create follower: self, guide: user
+  end
+
   def next_slot_in_queue
     queue_items.count + 1
   end

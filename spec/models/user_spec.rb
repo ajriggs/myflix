@@ -114,6 +114,23 @@ describe User do
     end
   end
 
+  describe '#follow!' do
+    let(:riggs) { Fabricate :user }
+    let(:james) { Fabricate :user }
+    let(:jon) { Fabricate :user }
+
+    it 'makes the scoped user a follower of the user passed to #follow!' do
+      riggs.follow! james
+      expect(User.find(riggs.id).guides.first).to eq james
+    end
+
+    it "does not erase the scoped user's other guides" do
+      Fabricate :follow, follower: riggs, guide: james
+      riggs.follow! jon
+      expect(User.find(riggs.id).guides).to include james, jon
+    end
+  end
+
   describe '#next_slot_in_queue' do
     let(:user) { Fabricate :user }
 

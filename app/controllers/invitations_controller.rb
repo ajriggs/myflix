@@ -11,7 +11,7 @@ class InvitationsController < ApplicationController
       flash.now[:error] = 'That person has already registered for myflix!'
       render :new
     elsif @invitation.save
-      AppMailer.invite_to_register(@invitation).deliver
+      AppMailer.delay.invite_to_register(@invitation.id)
       flash[:notice] = 'Invite sent!'
       redirect_to home_path
     else

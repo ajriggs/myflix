@@ -12,6 +12,11 @@ gem 'pg'
 gem 'sluggable_riggs'
 gem 'bootstrap_form'
 gem 'bcrypt'
+gem 'sidekiq'
+gem 'puma'
+gem 'foreman'
+gem 'sinatra', require: nil
+
 
 group :development do
   gem 'letter_opener'

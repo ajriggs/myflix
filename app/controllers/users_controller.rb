@@ -8,11 +8,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @invitation = Invitation.find_by token: user_params[:invite_token]
-    @user = User.new user_params.except :invite_token
+    @user = User.new user_params
     if @user.save
+      @invitation = Invitation.find_by token: params[:invite_token] if params[:invite_token]
       make_mutually_follow(@invitation.inviter, @user) if @invitation
-      AppMailer.welcome_user_upon_registration(@user).deliver
+      AppMailer.delay.welcome_user_upon_registration(@user.id)
       redirect_to login_path, notice: "Successfully registered! Please login, #{@user.full_name}"
     else
       flash.now[:error] = 'Your submission contains validation errors. Please fix the highlighted fields before submitting again.'
@@ -31,6 +31,7 @@ class UsersController < ApplicationController
   end
 
   def make_mutually_follow(user_1, user_2)
-    Follow.create [{ follower: user_1, guide: user_2 },{ follower: user_2, guide: user_1 }]
+    user_1.follow! user_2
+    user_2.follow! user_1
   end
 end

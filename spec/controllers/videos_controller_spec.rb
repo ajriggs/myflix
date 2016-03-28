@@ -21,8 +21,7 @@ describe VideosController do
 
     before do
       test_login
-      #the action below requires an 'id', but I pass a slug into this field by overriding to_param w/ the sluggable gem that I made in course 2.
-      get :show, id: video
+      get :show, id: video.slug
     end
 
     it_behaves_like 'ApplicationController#require_login' do

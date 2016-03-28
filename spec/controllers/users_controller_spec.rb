@@ -68,11 +68,8 @@ describe UsersController do
 
     context 'with a valid invite token' do
       let(:invite) { Fabricate :invitation }
-      let(:invite_user_params) do
-        Fabricate.attributes_for(:user).merge!(invite_token: invite.token)
-      end
 
-      before { post :create, user: invite_user_params }
+      before { post :create, user: user_params, invite_token: invite.token }
 
       it 'sets @invitation to the Invitation with the passed token, if an invite token is provided' do
         expect(assigns :invitation).to eq invite

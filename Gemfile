@@ -41,5 +41,6 @@ group :test do
 end
 
 group :production, :staging do
+  gem "sentry-raven"
   gem 'rails_12factor'
 end

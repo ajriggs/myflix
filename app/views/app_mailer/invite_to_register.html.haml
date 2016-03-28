@@ -1,0 +1,5 @@
+!!! 5
+%html(lang="en-US")
+  %body
+    %p #{@invitation.message}
+    = link_to "Join myflix today!", register_url(token: @invitation.token)

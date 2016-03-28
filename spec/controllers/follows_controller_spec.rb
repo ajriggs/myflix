@@ -1,9 +1,12 @@
 require 'spec_helper'
 
 describe FollowsController do
-  it { should use_before_action :require_login }
 
   describe 'GET index' do
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { get :index }
+    end
+
     it "sets @folllows to the current user's guides (people they follow)" do
       riggs = Fabricate :user, full_name: 'Riggs'
       Fabricate.times(3, :follow, follower: riggs)
@@ -14,6 +17,7 @@ describe FollowsController do
   end
 
   describe 'DELETE destroy' do
+
     let(:riggs) { Fabricate :user, full_name: 'Riggs' }
     let(:james) { Fabricate :user, full_name: 'James' }
     let!(:follow_1) { Fabricate :follow, follower: riggs }
@@ -21,6 +25,10 @@ describe FollowsController do
 
     before do
       test_login riggs
+    end
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { delete :destroy, id: follow_1.id }
     end
 
     it "deletes the specified follow from the db, if the current user user is the follower in the given follow" do
@@ -42,6 +50,10 @@ describe FollowsController do
   describe 'POST create' do
     let(:user) { Fabricate :user }
     let(:guide) { Fabricate :user }
+
+    it_behaves_like 'ApplicationController#require_login' do
+      let(:action) { post :create, user_id: guide.slug }
+    end
 
     before do
       test_login user

@@ -1,15 +1,16 @@
 class User < ActiveRecord::Base
+  include Reviewable
   include Sluggable
+
+  sluggable_column :email
+  before_create :render_unique_slug!
+
   has_secure_password validations: false
 
   has_many :follows_where_follower, class_name: 'Follow', foreign_key: 'guide_id'
   has_many :follows_where_following, class_name: 'Follow', foreign_key: 'follower_id'
 
-  has_many :reviews, -> { order('created_at DESC') }
   has_many :queue_items, -> { order('position ASC') }
-
-  before_save :render_unique_slug!
-  sluggable_column :email
 
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
@@ -37,6 +38,10 @@ class User < ActiveRecord::Base
 
   def can_follow?(user)
     !(following?(user) || user == self)
+  end
+
+  def follow!(user)
+    Follow.create follower: self, guide: user
   end
 
   def next_slot_in_queue

@@ -9,7 +9,8 @@ module Myflix
     config.encoding = "utf-8"
     config.filter_parameters += [:password]
     config.active_support.escape_html_entities_in_json = true
-    config.autoload_paths += ["#{config.root}/lib"]
+    config.autoload_paths << "#{config.root}/lib"
+    config.action_mailer.default_url_options = { host: 'localhost:5000' }
 
     config.assets.enabled = true
     config.generators do |g|

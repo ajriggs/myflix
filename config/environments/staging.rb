@@ -19,13 +19,13 @@ Myflix::Application.configure do
   config.active_support.deprecation = :notify
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { host: 'myflix-riggs.herokuapp.com' }
+  config.action_mailer.default_url_options = { host: 'myflix-riggs-staging.herokuapp.com' }
   config.action_mailer.smtp_settings = {
     address:              ENV['MAILGUN_SMTP_SERVER'],
     port:                 ENV['MAILGUN_SMTP_PORT'],
     user_name:            ENV['MAILGUN_SMTP_LOGIN'],
     password:             ENV['MAILGUN_SMTP_PASSWORD'],
-    domain:               'myflix-riggs.heroku.com',
+    domain:               'myflix-riggs-staging.heroku.com',
     authentication:       :plain,
     }
 end

@@ -1,6 +1,6 @@
 class QueueItem < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :video
+  include BelongsToUserable
+  include BelongsToVideoable
 
   validates_uniqueness_of :video_id, scope: :user_id
   validates_numericality_of :position, { only_integer: true }
@@ -18,18 +18,6 @@ class QueueItem < ActiveRecord::Base
       rating == '' ? new_review.rating = nil : new_review.rating = rating
       new_review.save validate: false
     end
-  end
-
-  def video_title
-    video.title
-  end
-
-  def category
-    video.category
-  end
-
-  def category_name
-    video.category.name
   end
 
   private

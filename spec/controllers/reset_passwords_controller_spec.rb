@@ -52,11 +52,11 @@ describe ResetPasswordsController do
         end
 
         it "updates the given user's password according to the param passed in" do
-          expect(User.first.password_digest).to_not eq riggs.password_digest
+          expect(User.last.password_digest).to_not eq riggs.password_digest
         end
 
         it "clears the user's token attribute" do
-          expect(User.first.token).to eq nil
+          expect(User.last.token).to eq nil
         end
 
         it 'sets flash[:notice]' do
@@ -75,11 +75,11 @@ describe ResetPasswordsController do
         end
 
         it "does not clear the user's token attribute" do
-          expect(User.first.token).to_not be nil
+          expect(User.last.token).to_not be nil
         end
 
         it "does not update the user's password" do
-          expect(User.first.password_digest).to eq riggs.password_digest
+          expect(User.last.password_digest).to eq riggs.password_digest
         end
 
         it 'sets flash.now[:error]' do
@@ -107,7 +107,7 @@ describe ResetPasswordsController do
       end
 
       it "does not update a user's password" do
-        expect(User.first.password_digest).to eq riggs.password_digest
+        expect(User.last.password_digest).to eq riggs.password_digest
       end
 
       it 'redirects to the invalid token path' do

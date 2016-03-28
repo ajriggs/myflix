@@ -12,6 +12,11 @@ gem 'pg'
 gem 'sluggable_riggs'
 gem 'bootstrap_form'
 gem 'bcrypt'
+gem 'sidekiq'
+gem 'puma'
+gem 'foreman'
+gem 'sinatra', require: nil
+
 
 group :development do
   gem 'letter_opener'
@@ -35,6 +40,7 @@ group :test do
   gem 'capybara-email'
 end
 
-group :production do
+group :production, :staging do
+  gem "sentry-raven"
   gem 'rails_12factor'
 end

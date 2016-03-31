@@ -13,6 +13,8 @@ gem 'sluggable_riggs'
 gem 'bootstrap_form'
 gem 'bcrypt'
 gem 'sidekiq'
+gem 'carrierwave'
+gem 'mini_magick'
 gem 'puma'
 gem 'foreman'
 gem 'sinatra', require: nil
@@ -43,4 +45,5 @@ end
 group :production, :staging do
   gem "sentry-raven"
   gem 'rails_12factor'
+  gem 'carrierwave-aws'
 end

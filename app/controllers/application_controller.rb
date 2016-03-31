@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_login
-    redirect_to login_path, notice: 'You must log in first!' unless logged_in?
+    redirect_to root_path, notice: 'You must log in first!' unless logged_in?
   end
 
   def require_logout

@@ -26,6 +26,10 @@ Myflix::Application.routes.draw do
   get 'invalid_token', to: 'reset_passwords#invalid_token', as: 'invalid_token'
   patch 'reset_password/:token', to: 'reset_passwords#update', as: 'update_password'
 
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
+
   resources :categories, only: [:show]
 
   get 'home', to: 'videos#index', as: 'home'

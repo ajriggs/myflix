@@ -39,12 +39,12 @@ describe ApplicationController do
     context 'without a valid session' do
       before { get :require_login_test }
 
-      it 'redirects to the login page' do
-        expect(response).to redirect_to login_path
+      it 'redirects to the root path' do
+        expect(response).to redirect_to root_path
       end
 
       it 'sets flash[:notice]' do
-        expect(flash[:notice]).to be_a String
+        expect(flash[:notice]).to be_present
       end
     end
   end
@@ -64,8 +64,8 @@ describe ApplicationController do
         expect(response).to redirect_to home_path
       end
 
-      it 'sets an error message in flash[:notice] if a user is logged in' do
-        expect(flash[:notice]).to be_a String
+      it 'flash[:notice] if a user is logged in' do
+        expect(flash[:notice]).to be_present
       end
     end
 

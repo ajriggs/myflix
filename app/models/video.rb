@@ -10,6 +10,9 @@ class Video < ActiveRecord::Base
 
   sluggable_column :title
 
+  mount_uploader :small_cover, SmallCoverUploader
+  mount_uploader :large_cover, LargeCoverUploader
+
   def average_rating
     # returns NaN by default, if no ratings have been given. This case is handled as a display level concern in helpers.
     reviews.reload

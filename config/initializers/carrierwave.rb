@@ -1,7 +1,7 @@
 CarrierWave.configure do |config|
-  config.store_dir = 'tmp/'
+  config.store_dir = 'public/tmp/'
   if (Rails.env.production? || Rails.env.staging?)
-    config.cache_dir       = "#{Rails.root}/tmp/uploads"
+    config.store_dir = 'public/tmp/'
     config.storage         = :aws
     config.aws_bucket      = ENV['AWS_S3_BUCKET']
     config.aws_credentials = {
@@ -10,6 +10,7 @@ CarrierWave.configure do |config|
       region:            ENV['AWS_REGION']
     }
   else
+    config.store_dir = 'tmp/'
     config.storage = :file
     config.enable_processing = Rails.env.development?
   end

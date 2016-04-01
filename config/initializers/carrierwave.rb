@@ -10,7 +10,8 @@ CarrierWave.configure do |config|
       region:            ENV['AWS_REGION']
     }
   else
-    config.store_dir = 'tmp/'
+    config.store_dir = 'spec/' if Rails.env.test?
+    config.store_dir = 'tmp/' if Rails.env.development?
     config.storage = :file
     config.enable_processing = Rails.env.development?
   end

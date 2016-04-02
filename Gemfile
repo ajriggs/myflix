@@ -18,6 +18,7 @@ gem 'mini_magick'
 gem 'puma'
 gem 'foreman'
 gem 'sinatra', require: nil
+gem 'stripe'
 
 
 group :development do

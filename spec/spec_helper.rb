@@ -54,6 +54,7 @@ RSpec.configure do |config|
   # to allow for simpler metadata calls (e.g. :vcr instead of vcr: true)
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
+  # disabling Rspec's default transactional behavior for all tests, and setting behavior manually in order to support truncation for selenium tests
   config.use_transactional_fixtures = false
   config.before(:suite) { DatabaseCleaner.clean_with :truncation }
   config.before(:each) { DatabaseCleaner.strategy = :transaction }

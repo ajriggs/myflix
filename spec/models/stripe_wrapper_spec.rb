@@ -3,7 +3,7 @@ require 'spec_helper'
 describe StripeWrapper::Charge, :vcr do
   let(:token) { Stripe::Token.create(card: { number: card_number, exp_year: Date.today.year + 4, exp_month: 01 }).id }
 
-  let(:charge) { StripeWrapper::Charge.create amount: 999, description: 'test', token: token }
+  let(:charge) { StripeWrapper::Charge.create amount: 999, description: 'test', source: token }
 
   describe 'Charge#create' do
     context 'when charge is accepted' do

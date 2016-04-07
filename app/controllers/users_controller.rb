@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new user_params
-    charge_options = { amount: 999, token: params[:stripeToken], description: "First-month subscription fee for #{@user.full_name}" }
+    charge_options = { amount: 999, source: params[:stripeToken], description: "First-month subscription fee for #{@user.full_name}" }
     charge = StripeWrapper::Charge.create charge_options if @user.valid?
     if !charge
       flash.now[:error] = 'Your submission contains validation errors. Please fix the highlighted fields before submitting again.'

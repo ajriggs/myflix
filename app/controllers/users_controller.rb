@@ -9,26 +9,20 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new user_params
-    if @user.valid?
-      begin
-        Stripe::Charge.create(
-          source:   params[:stripeToken],
-          amount:   999,
-          currency: 'usd',
-          description: 'First-month subscription fee',
-        )
-        @user.save
-        @invitation = Invitation.find_by token: params[:invite_token] if params[:invite_token]
-        make_mutually_follow(@invitation.inviter, @user) if @invitation
-        AppMailer.delay.welcome_user_upon_registration(@user.id)
-        redirect_to login_path, notice: "Successfully registered! Please login, #{@user.full_name}"
-      rescue Stripe::CardError => error
-        flash[:error] = error.message
-        redirect_to register_path
-      end
-    else
+    charge_options = { amount: 999, token: params[:stripeToken], description: "First-month subscription fee for #{@user.full_name}" }
+    charge = StripeWrapper::Charge.create charge_options if @user.valid?
+    if !charge
       flash.now[:error] = 'Your submission contains validation errors. Please fix the highlighted fields before submitting again.'
       render :new
+    elsif charge.successful?
+      @user.save
+      @invitation = Invitation.find_by token: params[:invite_token] if params[:invite_token]
+      make_mutually_follow(@invitation.inviter, @user) if @invitation
+      AppMailer.delay.welcome_user_upon_registration(@user.id)
+      redirect_to login_path, notice: "Successfully registered! Please login, #{@user.full_name}"
+    else
+      flash[:error] = charge.error_message
+      redirect_to register_path
     end
   end
 

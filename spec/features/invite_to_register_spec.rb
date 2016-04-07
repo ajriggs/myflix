@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'User invites another user to register for myflix' do
-  given(:riggs) { Fabricate :user, full_name: 'Riggs', email: 'riggs@example.com' }
+feature 'User invites another user to register for myflix', :js, :vcr do
+  given!(:riggs) { Fabricate :user, full_name: 'Riggs', email: 'riggs@example.com', password: 'password' }
   given(:invite_attributes) { Fabricate.attributes_for :invitation }
 
   background do
@@ -49,7 +49,12 @@ feature 'User invites another user to register for myflix' do
     expect(email_field_value).to eq invite_attributes[:email]
     fill_in :user_password, with: 'password'
     fill_in :user_full_name, with: invite_attributes[:name]
+    fill_in :card_number, with: '4242424242424242'
+    fill_in :cvc, with: '123'
+    select '1 - January', from: :date_month
+    select (Date.today.year + 4), from: :date_year
     click_button 'Sign Up'
+    save_and_open_page
     expect(page).to have_content 'Successfully registered!'
   end
 

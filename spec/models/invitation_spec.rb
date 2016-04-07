@@ -18,10 +18,6 @@ describe Invitation do
       expect(riggs_invite.token.length).to eq 22
     end
 
-    it 'generates a URL-safe string' do
-      expect(riggs_invite.token.parameterize).to eq riggs_invite.token
-    end
-
     it 'generates a a string with only lower-case letter characters' do
       expect(riggs_invite.token.downcase).to eq riggs_invite.token
     end

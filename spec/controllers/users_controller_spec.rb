@@ -27,18 +27,32 @@ describe UsersController do
     let(:user_params) { Fabricate.attributes_for(:user) }
 
     it_behaves_like 'ApplicationController#require_logout' do
-      let(:action) { post :create, user: user_params }
+      let(:action) {
+        charge = double('charge')
+        charge.stub(:successful?).and_return true
+        StripeWrapper::Charge.stub(:create).and_return charge
+        post :create, user: user_params
+      }
     end
 
-    context 'with valid input' do
-      before { post :create, user: user_params }
+    it 'saves @user to the database' do
+      charge = double('charge')
+      charge.stub(:successful?).and_return true
+      StripeWrapper::Charge.stub(:create).and_return charge
+      post :create, user: user_params
+      expect(User.last.email).to eq user_params[:email]
+    end
+
+    context 'with valid user data and a successful credit card charge' do
+      before do
+        charge = double('charge')
+        charge.stub(:successful?).and_return true
+        StripeWrapper::Charge.stub(:create).and_return charge
+        post :create, user: user_params
+      end
 
       it 'sets @user based on user params' do
         expect(assigns(:user).full_name).to eq user_params[:full_name]
-      end
-
-      it 'saves @user to the database' do
-        expect(User.last.email).to eq user_params[:email]
       end
 
       it 'redirects to the login page' do
@@ -48,28 +62,31 @@ describe UsersController do
       it 'sets flash[:notice]' do
         expect(flash[:notice]).to be_a String
       end
-    end
 
-    context 'with invalid input' do
-      before { post :create, user: {email: '', full_name: '', password:''} }
-
-      it 'does not save @user to the database' do
-        expect(User.find_by email: user_params[:email]).to eq nil
+      it 'sends an email with valid input' do
+        expect(ActionMailer::Base.deliveries).to_not be_empty
       end
 
-      it 'renders the new template' do
-        expect(response).to render_template :new
+      it 'sends email to the newly registered user' do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.to).to eq [user_params[:email]]
       end
 
-      it 'sets flash[:error]' do
-        expect(flash[:error]).to be_present
+      it 'sends the welcome message' do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.body).to include "Welcome to Myflix, #{user_params[:full_name]}"
       end
     end
 
-    context 'with a valid invite token' do
+    context 'with successful registration through a valid invite token' do
       let(:invite) { Fabricate :invitation }
 
-      before { post :create, user: user_params, invite_token: invite.token }
+      before do
+        charge = double('charge')
+        charge.stub(:successful?).and_return true
+        StripeWrapper::Charge.stub(:create).and_return charge
+        post :create, user: user_params, invite_token: invite.token
+      end
 
       it 'sets @invitation to the Invitation with the passed token, if an invite token is provided' do
         expect(assigns :invitation).to eq invite
@@ -84,27 +101,45 @@ describe UsersController do
       end
     end
 
-    context 'when sending emails' do
-       before { post :create, user: user_params }
-
-      it 'sends an email with valid input' do
-        expect(ActionMailer::Base.deliveries).to_not be_empty
-      end
-
-      it 'sends to the newly registered user' do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.to).to eq [user_params[:email]]
-      end
-
-      it 'sends the welcome message' do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.body).to include "Welcome to Myflix, #{user_params[:full_name]}"
-      end
-
-      it 'does not send an email with invalid controller input' do
-        outbound_queue_count = ActionMailer::Base.deliveries.count
+    context 'with invalid user data' do
+      before do
+        # Here, no mocks/stubs are provided to handle stripe charges, but the tests still pass, because no charges are attempted without valid user data.
         post :create, user: {email: '', full_name: '', password:''}
-        expect(ActionMailer::Base.deliveries.count).to eq outbound_queue_count
+      end
+
+      it 'does not save @user to the database' do
+        expect(User.find_by email: user_params[:email]).to eq nil
+      end
+
+      it 'renders the new template' do
+        expect(response).to render_template :new
+      end
+
+      it 'sets flash[:error]' do
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context 'with a declined credit card charge' do
+      before do
+        @outbound_queue_count = ActionMailer::Base.deliveries.count
+        charge = double('charge')
+        charge.stub(:successful?).and_return false
+        StripeWrapper::Charge.stub(:create).and_return charge
+        charge.stub(:error_message).and_return('Your card was declined.')
+        post :create, user: user_params
+      end
+
+      it 'sets flash[:error]' do
+        expect(flash[:error]).to eq 'Your card was declined.'
+      end
+
+      it 'redirects to the register path' do
+        expect(response).to redirect_to register_path
+      end
+
+      it 'does not send an email' do
+        expect(ActionMailer::Base.deliveries.count).to eq @outbound_queue_count
       end
     end
   end

@@ -8,7 +8,7 @@ describe ReviewsController do
     let!(:current_user_id) { test_login }
     let(:review_params) { Fabricate.attributes_for :review }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { post :create, video_id: video, review: review_params }
     end
 

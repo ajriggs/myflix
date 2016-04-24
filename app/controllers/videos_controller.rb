@@ -1,5 +1,6 @@
 class VideosController < ApplicationController
   before_action :require_login
+  decorates_assigned :video
 
   def index
     @categories = Category.all

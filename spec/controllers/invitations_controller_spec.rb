@@ -4,7 +4,7 @@ describe InvitationsController do
   describe 'GET new' do
     let(:riggs) { Fabricate :user }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :new }
     end
 
@@ -20,7 +20,7 @@ describe InvitationsController do
     let(:james) { Fabricate :user }
     let(:riggs_invite_params) { Fabricate.attributes_for :invitation, name: 'riggs', message: "please join myflix!", email: riggs.email }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { post :create, invitation: riggs_invite_params }
     end
 

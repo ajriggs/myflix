@@ -7,7 +7,7 @@ class QueueItemsController < ApplicationController
 
   def create
     video = Video.find_by slug: params[:video_id]
-    queue_item = QueueItem.create user: current_user, video: video, position: current_user.next_slot_in_queue
+    queue_item = QueueItem.create user: current_user, video: video, position: current_user.next_position_in_queue
     if queue_item.valid?
       redirect_to my_queue_path, notice: 'added to your queue.'
     else
@@ -19,7 +19,7 @@ class QueueItemsController < ApplicationController
 
   def destroy
     queue_item = QueueItem.find params[:id]
-    current_user.remove_from_queue!(queue_item)
+    current_user.remove_from_queue! queue_item
     current_user.normalize_queue!
     redirect_to my_queue_path
   end

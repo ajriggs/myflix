@@ -18,11 +18,11 @@ feature 'A new user registers for myflix', :js, :vcr do
       expect_successful_registration
 
       invitee_signs_in
-      user_should_follow name_string: riggs.full_name
+      user_should_follow name: riggs.full_name
       visit logout_path
 
       login riggs
-      user_should_follow name_string: invite_attributes[:name]
+      user_should_follow name: invite_attributes[:name]
 
       clear_email
     end

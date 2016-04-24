@@ -3,9 +3,10 @@
     .col-sm-10.col-sm-offset-1
       %article
         %header
-          = image_tag gravatar_image_string(@user)
-          %h2 #{@user.full_name}'s video collection (#{@user.queue_items.count})
-          = link_to 'Follow', user_follows_path(@user), method: :post, class: 'btn btn-default pull-right' if current_user.can_follow? @user
+          = image_tag gravatar_image_url(@user)
+          %h2 #{@user.full_name}'s video collection (#{@user.queue_size})
+          - if current_user.can_follow? @user
+            = link_to 'Follow', user_follows_path(@user), method: :post, class: 'btn btn-default pull-right'
 
         %table.table
           %thead
@@ -19,6 +20,6 @@
   .row
     .col-sm-10.col-sm-offset-1
       %header
-        %h3 #{@user.full_name}'s Reviews (#{@user.reviews.count})
+        %h3 #{@user.full_name}'s Reviews (#{@user.review_count})
       %ul
         = render partial: 'users/review', collection: @user.reviews

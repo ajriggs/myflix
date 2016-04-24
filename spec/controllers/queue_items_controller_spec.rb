@@ -3,7 +3,7 @@ require 'shoulda-matchers'
 
 describe QueueItemsController do
   describe 'GET index' do
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :index }
     end
 
@@ -24,7 +24,7 @@ describe QueueItemsController do
       post :create, video_id: video.slug
     end
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { post :create, video_id: video.slug }
     end
 
@@ -89,7 +89,7 @@ describe QueueItemsController do
       delete :destroy, id: queue[1].id
     end
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { delete :destroy, id: queue[0].id }
     end
 
@@ -125,7 +125,7 @@ describe QueueItemsController do
     let(:queue_item_5) { Fabricate :queue_item, user: user, position: 5}
     let(:queue) { [queue_item_1, queue_item_2, queue_item_3, queue_item_4, queue_item_5] }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:queue_params) do
         queue.map { |item| { id: item.id, position: item.position } }
       end

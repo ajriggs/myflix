@@ -19,6 +19,7 @@ gem 'puma'
 gem 'foreman'
 gem 'sinatra', require: nil
 gem 'stripe'
+gem 'draper'
 
 
 group :development do

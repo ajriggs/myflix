@@ -6,10 +6,6 @@ def login(user=nil)
   click_button 'Sign In'
 end
 
-def current_path
-  current_url.split('.com')[1]
-end
-
 def click_home_page_link
 click_link 'MyFLiX'
 end
@@ -22,9 +18,9 @@ def expect_to_view_category_page(category)
   expect(current_path).to eq "/categories/#{category.slug}"
 end
 
-def user_should_follow(name_string:)
+def user_should_follow(name:)
   visit people_path
-  expect(page).to have_content name_string
+  expect(page).to have_content name
 end
 
 def expect_successful_registration

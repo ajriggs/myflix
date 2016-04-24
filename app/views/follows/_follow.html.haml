@@ -2,7 +2,7 @@
 %tr(class="follow_#{index}")
   %td
     .pull-left
-      = image_tag gravatar_image_string(follow.guide)
+      = image_tag gravatar_image_url(follow.guide)
       = link_to follow.guide_name, follow.guide
   %td.extra-padding= follow.guide_queue_size
   %td.extra-padding= follow.guide_followers_count

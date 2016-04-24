@@ -3,7 +3,7 @@ require 'spec_helper'
 describe FollowsController do
 
   describe 'GET index' do
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :index }
     end
 
@@ -27,7 +27,7 @@ describe FollowsController do
       test_login riggs
     end
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { delete :destroy, id: follow_1.id }
     end
 
@@ -51,7 +51,7 @@ describe FollowsController do
     let(:user) { Fabricate :user }
     let(:guide) { Fabricate :user }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { post :create, user_id: guide.slug }
     end
 

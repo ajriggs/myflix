@@ -7,7 +7,7 @@ describe SessionsController do
   describe 'POST create' do
     let(:user) { Fabricate :user }
 
-    it_behaves_like 'ApplicationController#require_logout' do
+    it_behaves_like 'user can only access if logged out' do
       let(:action) { post :create, email: user.email, password: user.password }
     end
 

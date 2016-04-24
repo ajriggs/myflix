@@ -1,13 +1,11 @@
 require 'spec_helper'
 require 'shoulda-matchers'
 
-def fabricate_video_add_ratings(array_of_ratings)
+def fabricate_video_add_ratings(ratings)
+  # ratings defined as array, containing Integer values 1-5 (& nil)
   Fabricate :video do
     reviews do
-      #array should contain n elements of integer value, only 1..5
-      array_of_ratings.map do |r|
-        Fabricate :review, rating: r, user: Fabricate(:user)
-      end
+      ratings.map { |r| Fabricate :review, rating: r, user: Fabricate(:user) }
     end
   end
 end
@@ -19,7 +17,10 @@ describe Video do
 
   it { should belong_to :category }
   it { should have_many :queue_items }
-  it_behaves_like 'Reviewable'
+
+  it_behaves_like 'Reviewable' do
+    let(:object) { Fabricate(:video) { reviews(count: 2) } }
+  end
 
   describe '#search_by_title' do
     let(:parks_and_rec) { Fabricate :video, title: 'Parks and Recreation' }

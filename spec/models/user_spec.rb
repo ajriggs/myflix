@@ -10,7 +10,10 @@ describe User do
   it { should have_many(:follows_where_follower).class_name('Follow').with_foreign_key 'guide_id' }
   it { should have_many(:follows_where_following).class_name('Follow').with_foreign_key 'follower_id' }
   it { should have_many :queue_items }
-  it_behaves_like 'Reviewable'
+
+  it_behaves_like 'Reviewable' do
+    let(:object) { Fabricate(:user) { reviews(count: 2) } }
+  end
 
   describe '#render_token!' do
     let(:riggs) { Fabricate :user }
@@ -18,10 +21,6 @@ describe User do
 
     it 'sets [user].token as a 22-character string (to be emailed to a user who needs a password reset)' do
       expect(riggs.token.length).to eq 22
-    end
-
-    it 'generates a URL-safe string' do
-      expect(riggs.token.parameterize).to eq riggs.token
     end
 
     it 'generates a a string with only lower-case letter characters' do
@@ -131,16 +130,16 @@ describe User do
     end
   end
 
-  describe '#next_slot_in_queue' do
+  describe '#next_position_in_queue' do
     let(:user) { Fabricate :user }
 
     it "returns one greater than the position of the user's last queue item" do
       3.times { |n| Fabricate :queue_item, user: user, position: n + 1 }
-      expect(user.next_slot_in_queue).to eq 4
+      expect(user.next_position_in_queue).to eq 4
     end
 
     it "returns 1 if there are no other videos in the user's queue" do
-      expect(user.next_slot_in_queue).to eq 1
+      expect(user.next_position_in_queue).to eq 1
     end
   end
 
@@ -176,9 +175,9 @@ describe User do
 
   describe '#update_queue!' do
     let(:user) { Fabricate :user }
-    let!(:queue_item_1) { Fabricate :queue_item, user: user, position: 1, rating: 2 }
-    let!(:queue_item_2) { Fabricate :queue_item, user: user, position: 2, rating: 5 }
-    let!(:queue_item_3) { Fabricate :queue_item, user: user, position: 3, rating: nil }
+    let(:queue_item_1) { Fabricate :queue_item, user: user, position: 1, rating: 2 }
+    let(:queue_item_2) { Fabricate :queue_item, user: user, position: 2, rating: 5 }
+    let(:queue_item_3) { Fabricate :queue_item, user: user, position: 3, rating: nil }
     let!(:queue) { [queue_item_1, queue_item_2, queue_item_3] }
 
     it 'does not update the queue if any item submitted for update is not associated with the user' do
@@ -252,6 +251,18 @@ describe User do
       user.queue_items[2].position = 2
       user.normalize_queue!
       expect(user.queue_items.map &:position).to eq [1, 2, 3]
+    end
+  end
+
+  describe '#queue_size' do
+    let(:user) { Fabricate :user }
+    it "returns 0 if a user has no items in queue" do
+      expect(user.queue_size).to eq 0
+    end
+
+    it "returns the number of videos in a user's queue" do
+      Fabricate.times(4, :queue_item, user: user)
+      expect(user.queue_size).to eq 4
     end
   end
 

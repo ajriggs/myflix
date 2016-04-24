@@ -4,7 +4,7 @@ require 'shoulda-matchers'
 describe VideosController do
 
   describe 'GET index' do
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :index }
     end
 
@@ -24,7 +24,7 @@ describe VideosController do
       get :show, id: video.slug
     end
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :show, id: video }
     end
 
@@ -40,7 +40,7 @@ describe VideosController do
   describe 'GET search' do
     let(:video) { Fabricate :video }
 
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :search, user_search: video.title }
     end
 

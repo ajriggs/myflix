@@ -3,7 +3,7 @@ require 'shoulda-matchers'
 
 describe CategoriesController do
   describe 'GET show' do
-    it_behaves_like 'ApplicationController#require_login' do
+    it_behaves_like 'user can only access if logged in' do
       let(:action) { get :show, id: Fabricate(:category).slug }
     end
 

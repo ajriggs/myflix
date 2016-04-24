@@ -6,6 +6,7 @@ require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'sidekiq/testing'
 require 'carrierwave/test/matchers'
+require 'vcr'
 
 # allows sidekiq workers to be executed synchronously, so as to not break specs
 Sidekiq::Testing.inline!
@@ -38,7 +39,6 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -51,13 +51,23 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
   config.infer_spec_type_from_file_location!
-  
-  config.after(:all) do
-    if Rails.env.test?
-      FileUtils.rm_rf(Dir["#{Rails.root}/public/uploads"])
-    end
+  # to allow for simpler metadata calls (e.g. :vcr instead of vcr: true)
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+
+  # disabling Rspec's default transactional behavior for all tests, and setting behavior manually in order to support truncation for selenium tests
+  config.use_transactional_fixtures = false
+  config.before(:suite) { DatabaseCleaner.clean_with :truncation }
+  config.before(:each) { DatabaseCleaner.strategy = :transaction }
+  config.before(:each, js: true) { DatabaseCleaner.strategy = :truncation }
+  config.before(:each) { DatabaseCleaner.start }
+  config.after(:each) { DatabaseCleaner.clean }
+
+  config.after(:suite) do
+    FileUtils.rm_rf(Dir["#{Rails.root}/public/uploads"]) if Rails.env.test?
   end
 end
+
+Capybara.server_port = 52662
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
@@ -65,4 +75,11 @@ Shoulda::Matchers.configure do |config|
 
     with.library :rails
   end
+end
+
+VCR.configure do |config|
+  config.cassette_library_dir = 'spec/cassettes'
+  config.hook_into :webmock
+  config.configure_rspec_metadata!
+  config.ignore_localhost = true
 end

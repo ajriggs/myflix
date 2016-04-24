@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
     Follow.create follower: self, guide: user
   end
 
-  def next_slot_in_queue
+  def next_position_in_queue
     queue_items.count + 1
   end
 
@@ -69,5 +69,9 @@ class User < ActiveRecord::Base
 
   def normalize_queue!
     queue_items.each_with_index {|item, index| item.update! position: index + 1}
+  end
+
+  def queue_size
+    queue_items.count
   end
 end

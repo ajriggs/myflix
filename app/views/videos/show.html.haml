@@ -2,21 +2,21 @@
   .container
     .row
       .video_large_cover.col-sm-7.col-sm-offset-1
-        = image_tag "#{@video.large_cover_url}", class: 'img-rounded'
+        = image_tag "#{video.large_cover_url}", class: 'img-rounded'
       .video_info.col-sm-3
         %header
-          %h3= @video.title
-          %span Rating: (#{display_avg_video_stars @video})
-        %p= @video.tagline
+          %h3= video.title
+          %span Rating: (#{video.rating_string})
+        %p= video.tagline
         .actions
-          %a.btn.btn-primary(href="#{@video.video_url}") Watch Now
-          - unless current_user.has_in_queue? @video
-            = link_to '+ My Queue', video_queue_items_path(@video), method: :post, class: 'btn btn-default'
+          %a.btn.btn-primary(href="#{video.video_url}") Watch Now
+          - unless current_user.has_in_queue? video
+            = link_to '+ My Queue', video_queue_items_path(video), method: :post, class: 'btn btn-default'
 
 %section.reviews.container
   .row
     .col-sm-10.col-sm-offset-1
-      = form_for [@video, @review] do |f|
+      = form_for [video, @review] do |f|
         %fieldset
           .form-group
             = f.label :rating, 'Rate this video'
@@ -30,9 +30,9 @@
                 = f.text_area(:review, rows: '6', class: 'form-control')
         %fieldset.form-group.actions.clearfix
           = f.submit :submit, class: 'btn'
-          = link_to 'Cancel', @video
+          = link_to 'Cancel', video
       %header
-        %h3 User Reviews (#{@video.reviews.count})
+        %h3 User Reviews (#{video.review_count})
       %ul
-        - @video.reviews.reload
-        = render @video.reviews
+        - video.reviews.reload
+        = render video.reviews

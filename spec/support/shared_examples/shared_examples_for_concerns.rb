@@ -2,6 +2,12 @@ require 'spec_helper'
 
 shared_examples 'Reviewable' do
   it { should have_many(:reviews).order 'created_at DESC' }
+
+  describe '#review_count' do
+    it 'returns the number of reviews owned by the scoped object' do
+      expect(object.review_count).to eq object.reviews.count
+    end
+  end
 end
 
 shared_examples 'BelongsToUserable' do
